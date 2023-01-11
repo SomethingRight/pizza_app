@@ -22,7 +22,7 @@ TextTheme textTheme() {
     bodyText1: TextStyle(
         color: Colors.black45, fontSize: 18, fontWeight: FontWeight.normal),
     bodyText2: TextStyle(
-        color: Colors.black, fontSize: 12, fontWeight: FontWeight.normal),
+        color: Colors.black54, fontSize: 22, fontWeight: FontWeight.normal),
     
   );
 }
