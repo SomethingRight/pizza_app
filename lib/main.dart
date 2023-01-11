@@ -1,3 +1,4 @@
+import 'package:ecom_pizza_app/blocs/cart/cart_bloc.dart';
 import 'package:ecom_pizza_app/blocs/wishlist/wishlist_bloc.dart';
 import 'package:ecom_pizza_app/config/app_router.dart';
 import 'package:ecom_pizza_app/config/theme.dart';
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (_) => WishlistBloc()..add(StartWishlist()),
+        ),
+        BlocProvider(
+          create: (_) => CartBloc()..add(CartStarted()),
         ),
       ],
       child: MaterialApp(

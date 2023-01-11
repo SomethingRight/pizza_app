@@ -1,7 +1,7 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../blocs/cart/cart_bloc.dart';
 import '../models/product_model.dart';
 
 class CartProductCard extends StatelessWidget {
@@ -26,18 +26,27 @@ class CartProductCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(product.name, style: Theme.of(context).textTheme.headline3),
+                Text(product.name,
+                    style: Theme.of(context).textTheme.headline3),
                 Text('${product.price} ₾',
                     style: Theme.of(context).textTheme.headline4),
               ],
             ),
           ),
-          Row(
-            children: [
-              IconButton(onPressed: () {}, icon: const Icon(Icons.remove)),
-              Text('1', style: Theme.of(context).textTheme.headline3),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
-            ],
+          BlocBuilder<CartBloc, CartState>(
+            builder: (context, state) {
+              return Row(
+                children: [
+                  IconButton(onPressed: () {
+                    context.read<CartBloc>().add(CartProductRemoved(product));
+                  }, icon: const Icon(Icons.remove)),
+                  Text('1', style: Theme.of(context).textTheme.headline3),
+                  IconButton(onPressed: () {
+                     context.read<CartBloc>().add(CartProductAdded(product));
+                  }, icon: const Icon(Icons.add)),
+                ],
+              );
+            },
           )
         ],
       ),

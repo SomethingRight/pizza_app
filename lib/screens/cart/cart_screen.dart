@@ -1,6 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:ecom_pizza_app/blocs/cart/cart_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../models/models.dart';
 import '../../models/product_model.dart';
 import '../../widgets/widgets.dart';
 
@@ -19,7 +22,7 @@ class CartScreen extends StatelessWidget {
       appBar: const CustomAppBar(
         title: 'Cart',
       ),
-      bottomNavigationBar:  BottomAppBar(
+      bottomNavigationBar: BottomAppBar(
         color: Colors.black87,
         child: Container(
           height: 70,
@@ -38,104 +41,138 @@ class CartScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            //List of products inside cart
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Add 20.0 ₾ for free delivery',
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black87),
-                        onPressed: () {
-                          Navigator.of(context).pushNamed('/');
-                        },
-                        child: const Text('add more items')),
-                  ],
-                ),
-                const Divider(
-                  thickness: 2.2,
-                ),
-                CartProductCard(product: Product.products[1]),
-                CartProductCard(product: Product.products[3]),
-                CartProductCard(product: Product.products[0]),
-              ],
-            ),
-
-            //Fee information
-            Column(
-              children: [
-                const Divider(
-                  thickness: 2.2,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
+      // Body with Bloc logic
+      body: BlocBuilder<CartBloc, CartState>(
+        builder: (context, state) {
+          if (state is CartLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (state is CartLoaded) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //Upper part of screen including list of products
+                  Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            'Subtotal',
-                            style: Theme.of(context).textTheme.headline2,
+                            state.cart.freeDeliveryString,
+                            style: Theme.of(context).textTheme.bodyText2,
                           ),
-                          Text('41.5 ₾',
-                              style: Theme.of(context).textTheme.headline2)
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.black87),
+                              onPressed: () {
+                                Navigator.of(context).pushNamed('/');
+                              },
+                              child: Text(
+                                'add more items',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline3
+                                    ?.copyWith(color: Colors.white),
+                              )),
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            'Delivery fee',
-                            style: Theme.of(context).textTheme.headline2,
-                          ),
-                          Text('5 ₾',
-                              style: Theme.of(context).textTheme.headline2)
-                        ],
+                      const Divider(
+                        thickness: 2.2,
+                      ),
+                      // List of products
+                      SizedBox(
+                        height: 400,
+                        child: ListView.builder(
+                          itemCount: state.cart.products.length,
+                          itemBuilder: (context, index) {
+                            return CartProductCard(
+                                product: state.cart.products[index]);
+                          },
+                        ),
                       ),
                     ],
                   ),
-                ),
-                Stack(
-                  children: [
-                    Container(
-                      height: 60,
-                      color: Colors.black.withAlpha(50),
-                      width: MediaQuery.of(context).size.width,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
+
+                  //Fee information
+                  Column(
+                    children: [
+                      const Divider(
+                        thickness: 2.2,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
                           children: [
-                            Text(
-                              'Total',
-                              style: Theme.of(context).textTheme.headline2,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  'Subtotal',
+                                  style: Theme.of(context).textTheme.headline2,
+                                ),
+                                Text('${state.cart.subtotalString} ₾',
+                                    style:
+                                        Theme.of(context).textTheme.headline2)
+                              ],
                             ),
-                            Text('46.5 ₾',
-                                style: Theme.of(context).textTheme.headline2)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  'Delivery fee',
+                                  style: Theme.of(context).textTheme.headline2,
+                                ),
+                                Text('${state.cart.deliveryFeeString} ₾',
+                                    style:
+                                        Theme.of(context).textTheme.headline2)
+                              ],
+                            ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
-                )
-              ],
-            )
-          ],
-        ),
+                      Stack(
+                        children: [
+                          Container(
+                            height: 60,
+                            color: Colors.black.withAlpha(50),
+                            width: MediaQuery.of(context).size.width,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 15),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    'Total',
+                                    style:
+                                        Theme.of(context).textTheme.headline2,
+                                  ),
+                                  Text('${state.cart.totalString} ₾',
+                                      style:
+                                          Theme.of(context).textTheme.headline2)
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
+            );
+          } else {
+            return const Text('Something went wrong!');
+          }
+        },
       ),
     );
   }

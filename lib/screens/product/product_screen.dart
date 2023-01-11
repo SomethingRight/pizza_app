@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../blocs/cart/cart_bloc.dart';
 import '../../blocs/wishlist/wishlist_bloc.dart';
 import '../../models/models.dart';
 import '../../widgets/widgets.dart';
@@ -40,6 +41,7 @@ class ProductScreen extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
+              // Wishlist button
               BlocBuilder<WishlistBloc, WishlistState>(
                 builder: (context, state) {
                   return IconButton(
@@ -48,7 +50,7 @@ class ProductScreen extends StatelessWidget {
                           .read<WishlistBloc>()
                           .add(AddWishlistProduct(product));
 
-                      const  snackBar = SnackBar(
+                      const snackBar = SnackBar(
                         content: Text('Added to wishlist!'),
                         duration: Duration(milliseconds: 600),
                       );
@@ -61,13 +63,26 @@ class ProductScreen extends StatelessWidget {
                   );
                 },
               ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: Colors.white),
-                onPressed: () {},
-                child: Text(
-                  'Add to cart',
-                  style: Theme.of(context).textTheme.headline2,
-                ),
+              // Added to cart button
+              BlocBuilder<CartBloc, CartState>(
+                builder: (context, state) {
+                  return ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Colors.white),
+                    onPressed: () {
+                      context.read<CartBloc>().add(CartProductAdded(product));
+
+                      const snackbarCart = SnackBar(
+                        content: Text('Added to cart'),
+                        duration: Duration(milliseconds: 600),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackbarCart);
+                    },
+                    child: Text(
+                      'Add to cart',
+                      style: Theme.of(context).textTheme.headline2,
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -142,7 +157,7 @@ class ProductScreen extends StatelessWidget {
             children: [
               ListTile(
                 title: Text(
-                  'Free delivery when ordering from two pizzas,\n otherwise 5 ₾',
+                  'Free delivery when ordering minimum 30 ₾ \n otherwise 5 ₾',
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
               ),

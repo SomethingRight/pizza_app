@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ecom_pizza_app/models/models.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../blocs/cart/cart_bloc.dart';
 import '../blocs/wishlist/wishlist_bloc.dart';
 import '../config/theme.dart';
 
@@ -81,20 +82,46 @@ class ProductCard extends StatelessWidget {
                             ],
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          iconSize: 32,
-                          icon: const Icon(
-                            Icons.add_outlined,
-                            color: Colors.white,
-                          ),
+                        BlocBuilder<CartBloc, CartState>(
+                          builder: (context, state) {
+                            if (state is CartLoading) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            if (state is CartLoaded) {
+                              return IconButton(
+                                onPressed: () {
+                                  context
+                                      .read<CartBloc>()
+                                      .add(CartProductAdded(product));
+
+                                  const snackBarCart = SnackBar(
+                                    content: Text('Added to cart'),
+                                    duration: Duration(milliseconds: 600),
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBarCart);
+                                },
+                                iconSize: 32,
+                                icon: const Icon(
+                                  Icons.add_outlined,
+                                  color: Colors.white,
+                                ),
+                              );
+                            } else {
+                              return const Text('Something went wrong!');
+                            }
+                          },
                         ),
                         isWishlist == true
                             ? BlocBuilder<WishlistBloc, WishlistState>(
                                 builder: (context, state) {
                                   return IconButton(
                                     onPressed: () {
-                                      context.read<WishlistBloc>().add(RemoveWishlistProduct(product));
+                                      context
+                                          .read<WishlistBloc>()
+                                          .add(RemoveWishlistProduct(product));
                                     },
                                     iconSize: 32,
                                     icon: const Icon(
