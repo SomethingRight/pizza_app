@@ -6,7 +6,23 @@ import 'models.dart';
 class Cart extends Equatable{
   final List<Product> products;
     const Cart({this.products = const <Product>[]});
+
+
+// Check and change quantity methods
+  Map productQuantity(products) {
+    var quantity = Map();
+    
+    this.products.forEach((product) {
+      if (!quantity.containsKey(product)){
+        quantity[product] = 1;
+      }
+      else {quantity[product] += 1;}
+     });
+     return quantity;
+    }
   
+
+
 // Fee calculated methods
 double get subtotal =>  products.fold(0, (total, current) => total + current.price);
 

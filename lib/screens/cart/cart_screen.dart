@@ -65,7 +65,7 @@ class CartScreen extends StatelessWidget {
                             state.cart.freeDeliveryString,
                             style: Theme.of(context).textTheme.bodyText2,
                           ),
-                          ElevatedButton(
+                          TextButton(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.black87),
                               onPressed: () {
@@ -87,10 +87,13 @@ class CartScreen extends StatelessWidget {
                       SizedBox(
                         height: 400,
                         child: ListView.builder(
-                          itemCount: state.cart.products.length,
+                          itemCount: state.cart.productQuantity(state.cart.products).keys.length,
                           itemBuilder: (context, index) {
                             return CartProductCard(
-                                product: state.cart.products[index]);
+                                product: state.cart.productQuantity(state.cart.products).keys.elementAt(index),
+                                quantity: state.cart.productQuantity(state.cart.products).values.elementAt(index),
+                                
+                                );
                           },
                         ),
                       ),

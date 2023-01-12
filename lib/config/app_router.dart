@@ -8,12 +8,14 @@ class AppRouter {
     print('this route is ${settings.name}');
 
     switch (settings.name) {
+      case '/splash':
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case '/':
-        return MaterialPageRoute(builder: (_) => HomeScreen());
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
       case '/cart':
-        return MaterialPageRoute(builder: (_) => CartScreen());
+        return MaterialPageRoute(builder: (_) => const CartScreen());
       case '/wishlist':
-        return MaterialPageRoute(builder: (_) => WishlistScreen());
+        return MaterialPageRoute(builder: (_) => const WishlistScreen());
       case '/catalog':
         return MaterialPageRoute(
             builder: (_) => CatalogScreen(
@@ -25,7 +27,7 @@ class AppRouter {
                    product: settings.arguments as Product,
         ));
       case '/user':
-        return MaterialPageRoute(builder: (_) => UserScreen());
+        return MaterialPageRoute(builder: (_) => const  UserScreen());
 
       default:
         return _errorRoute();
@@ -34,10 +36,10 @@ class AppRouter {
 
   static _errorRoute() {
     return MaterialPageRoute(
-        settings: RouteSettings(name: '/error'),
+        settings: const RouteSettings(name: '/error'),
         builder: (_) => Scaffold(
               appBar: AppBar(
-                title: Text('ERROR'),
+                title: const Text('ERROR'),
               ),
             ));
   }

@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         title: 'PizzaMaker',
         theme: theme(),
         onGenerateRoute: AppRouter.onGenerateRoute,
-        initialRoute: '/',
+        initialRoute: '/splash',
       ),
     );
   }

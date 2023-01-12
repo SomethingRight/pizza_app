@@ -4,3 +4,4 @@ export 'wishlist/wishlist_screen.dart';
 export '../screens/catalog/catalog_screen.dart';
 export '../screens/product/product_screen.dart';
 export '../screens/user/user_screen.dart';
+export '../screens/splash/splash_screen.dart';
