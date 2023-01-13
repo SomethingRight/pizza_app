@@ -8,7 +8,7 @@ class Cart extends Equatable{
     const Cart({this.products = const <Product>[]});
 
 
-// Check and change quantity methods
+// Check and change quantity method
   Map productQuantity(products) {
     var quantity = Map();
     
@@ -16,7 +16,7 @@ class Cart extends Equatable{
       if (!quantity.containsKey(product)){
         quantity[product] = 1;
       }
-      else {quantity[product] += 1;}
+      else {quantity[product] += 1 ;}
      });
      return quantity;
     }

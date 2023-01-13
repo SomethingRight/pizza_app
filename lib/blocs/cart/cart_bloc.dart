@@ -44,7 +44,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
   }
 
-    Stream<CartState> _mapCartProductRemovedToState(
+  Stream<CartState> _mapCartProductRemovedToState(
     CartProductRemoved event,
     CartState state,
   ) async* {
